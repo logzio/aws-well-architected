@@ -22,7 +22,8 @@ type WellArchitected struct {
 }
 
 const (
-	maxBulkSizeBytes = 10 * 1024 * 1024 // 10 MB
+	maxBulkSizeBytes  = 10 * 1024 * 1024 // 10 MB
+	logzioSendingType = "aws-wellarchitected"
 )
 
 func NewWellArchitected(ctx context.Context) (*WellArchitected, error) {
@@ -39,9 +40,9 @@ func NewWellArchitected(ctx context.Context) (*WellArchitected, error) {
 	}
 
 	return &WellArchitected{
-		ctx:    	  ctx,
-		logger: 	  cfg.Logger,
-		client: 	  client,
+		ctx:    ctx,
+		logger: cfg.Logger,
+		client: client,
 	}, nil
 }
 
@@ -151,6 +152,12 @@ func (wa *WellArchitected) getWorkload(workloadID *string) (*types.Workload, err
 		return nil, fmt.Errorf("error marshaling workload with id %s: %v", *workloadID, err)
 	}
 
+	workloadJSON, err = addTypeToData(workloadJSON)
+
+	if err != nil {
+		return nil, err
+	}
+
 	wa.data = append(wa.data, workloadJSON)
 
 	return workloadOutput.Workload, nil
@@ -196,6 +203,12 @@ func (wa *WellArchitected) parseLensReview(lensReview *wellarchitected.GetLensRe
 	if err != nil {
 		return fmt.Errorf("error marshaling lens review with workload id %s and lens alias %s: %v",
 			*lensReview.WorkloadId, *lensReview.LensReview.LensAlias, err)
+	}
+
+	parsedLensReviewJSON, err = addTypeToData(parsedLensReviewJSON)
+
+	if err != nil {
+		return err
 	}
 
 	wa.data = append(wa.data, parsedLensReviewJSON)
@@ -248,6 +261,12 @@ func (wa *WellArchitected) parseLensReviewImprovements(
 			*lensReviewImprovements.WorkloadId, *lensReviewImprovements.LensAlias, err)
 	}
 
+	parsedLensReviewJSON, err = addTypeToData(parsedLensReviewJSON)
+
+	if err != nil {
+		return err
+	}
+
 	wa.data = append(wa.data, parsedLensReviewJSON)
 
 	return nil
@@ -276,6 +295,26 @@ func (wa *WellArchitected) sendDataToLogzio() error {
 	logzioSender.Stop()
 
 	return nil
+}
+
+func addTypeToData(data []byte) ([]byte, error) {
+	var dataWithType map[string]interface{}
+
+	err := json.Unmarshal(data, &dataWithType)
+
+	if err != nil {
+		return nil, err
+	}
+
+	dataWithType["type"] = logzioSendingType
+
+	dataWithTypeJSON, err := json.Marshal(dataWithType)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return dataWithTypeJSON, nil
 }
 
 func main() {
