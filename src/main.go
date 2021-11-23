@@ -23,7 +23,7 @@ type WellArchitected struct {
 
 const (
 	maxBulkSizeBytes  = 10 * 1024 * 1024 // 10 MB
-	logzioSendingType = "aws-wellarchitected"
+	logzioSendingType = "aws-wa"
 )
 
 func NewWellArchitected(ctx context.Context) (*WellArchitected, error) {
