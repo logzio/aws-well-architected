@@ -6,7 +6,7 @@ Auto-deployment of the Lambda function that collects AWS Well-Architected data a
 
 To start just press the button and follow the instructions:
 
-[![Deploy to AWS](https://dytvr9ot2sszz.cloudfront.net/logz-docs/lights/LightS-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template?templateURL=https://logzio-aws-integrations-us-east-1.s3.amazonaws.com/aws-cost-usage-auto-deployment/auto-deployment.yaml&stackName=logzio-aws-cost-usage-auto-deployment)
+[![Deploy to AWS](https://dytvr9ot2sszz.cloudfront.net/logz-docs/lights/LightS-button.png)](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/create/template?templateURL=https://logzio-aws-integrations-us-east-1.s3.amazonaws.com/aws-well-architected-auto-deployment/auto-deployment.yaml&stackName=logzio-aws-well-architected-auto-deployment)
 
 You'll be taken to AWS, where you'll configure the resources to be deployed. Keep the defaults and click Next:
 
@@ -39,9 +39,9 @@ This auto-deployment will create the following resources in your AWS account:
 
 | Resource Type | Resource Name |
 | --- | --- |
-| AWS::IAM::Role | LogzioAWSCostAndUsage |
-| AWS::Lambda::Function | logzio-aws-cost-and-usage |
-| AWS::Events::Rule | LogzioAWSCostAndUsage |
+| AWS::IAM::Role | LogzioAWSWellArchitected |
+| AWS::Lambda::Function | logzio-well-architected |
+| AWS::Events::Rule | LogzioAWSWellArchitected |
 | AWS::Lambda::Permission | - |
 
 ## Searching in Logz.io
