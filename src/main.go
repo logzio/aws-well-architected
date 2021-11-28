@@ -195,7 +195,6 @@ func (wa *WellArchitected) parseLensReview(lensReview *wellarchitected.GetLensRe
 	}
 
 	delete(lensReviewMap["LensReview"].(map[string]interface{}), "PillarReviewSummaries")
-
 	lensReviewMap["LensReview"].(map[string]interface{})["PillarReviewSummary"] = pillarReviewSummary
 
 	parsedLensReviewJSON, err := json.Marshal(lensReviewMap)
@@ -251,7 +250,6 @@ func (wa *WellArchitected) parseLensReviewImprovements(
 	}
 
 	delete(lensReviewImprovementsMap, "ImprovementSummaries")
-
 	lensReviewImprovementsMap["ImprovementSummary"] = improvementSummary
 
 	parsedLensReviewJSON, err := json.Marshal(lensReviewImprovementsMap)

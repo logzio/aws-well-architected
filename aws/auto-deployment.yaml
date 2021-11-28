@@ -1,0 +1,95 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Auto deployment of Logz.io AWS Well-Architected.
+Parameters:
+  LogzioURL:
+    Type: String
+    Description: >-
+      The Logz.io listener URL fot your region. (For more details, see the regions page:
+      https://docs.logz.io/user-guide/accounts/account-region.html)
+    Default: 'https://listener.logz.io:8071'
+    AllowedValues:
+      - 'https://listener.logz.io:8071'
+      - 'https://listener-au.logz.io:8071'
+      - 'https://listener-ca.logz.io:8071'
+      - 'https://listener-eu.logz.io:8071'
+      - 'https://listener-nl.logz.io:8071'
+      - 'https://listener-uk.logz.io:8071'
+      - 'https://listener-wa.logz.io:8071'
+  LogzioToken:
+    Type: String
+    Description: >-
+      Your Logz.io logs token. (Can be retrieved from the Manage Token page.)
+    MinLength: 1
+  CloudWatchEventScheduleExpression:
+    Type: String
+    Description: >-
+      The scheduling expression that determines when and how often the Lambda
+      function runs.
+    Default: rate(10 hours)
+    MinLength: 1
+    MaxLength: 256
+Resources:
+  LambdaFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Code:
+        S3Bucket: logzio-aws-integrations-us-east-1
+        S3Key: aws-well-architected-auto-deployment/lambda_function.zip
+      FunctionName: logzio-aws-well-architected
+      Description: >-
+        Lambda function for collecting AWS well-architected data and sending
+        them to Logz.io in bulks over HTTP.
+      Handler: main
+      Role: !GetAtt IAMRole.Arn
+      Runtime: go1.x
+      ReservedConcurrentExecutions: 1
+      Environment:
+        Variables:
+          URL: !Ref LogzioURL
+          TOKEN: !Ref LogzioToken
+  IAMRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: LogzioAWSWellArchitected
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: LogzioAWSWellArchitected
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'wellarchitected:Get*'
+                  - 'wellarchitected:List*'
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: '*'
+  EventRule:
+    Type: 'AWS::Events::Rule'
+    Properties:
+      Name: LogzioAWSCostAndUsage
+      ScheduleExpression: !Ref CloudWatchEventScheduleExpression
+      State: ENABLED
+      Targets:
+        - Arn: !GetAtt LambdaFunction.Arn
+          Id: LogzioAWSCostAndUsageLambdaFunction
+  LambdaPermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      FunctionName: !Ref LambdaFunction
+      Action: 'lambda:InvokeFunction'
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt EventRule.Arn
