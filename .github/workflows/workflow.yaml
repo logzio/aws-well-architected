@@ -14,9 +14,8 @@ jobs:
           go-version: '1.x'
       - name: Run unit tests
         run: |
-          go get github.com/aws/aws-sdk-go-v2/service/wellarchitected
-          go get github.com/aws/aws-sdk-go-v2/service/wellarchitected/types
-          go test -race -coverprofile=code_coverage.xml -covermode=atomic ./src/main_test.go
+          cd ./src
+          go test -race -coverprofile=code_coverage.xml -covermode=atomic
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
