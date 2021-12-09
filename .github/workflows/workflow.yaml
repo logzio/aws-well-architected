@@ -23,7 +23,7 @@ jobs:
       - name: Build
         run: |
           cd src
-          GOOS=linux go build main
+          GOOS=linux go build main.go
       - name: Copy files to 'upload' directory
         run: |
           mkdir upload
