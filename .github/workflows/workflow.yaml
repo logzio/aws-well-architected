@@ -12,13 +12,32 @@ jobs:
       - uses: actions/setup-go@v2
         with:
           go-version: '1.x'
-      - name: Run unit tests
+      - name: Run unit tests and code-coverage
         run: |
-          cd ./src
-          go test -race -coverprofile=../code_coverage.txt -covermode=atomic
+          cd src
+          go test -race -covermode=atomic
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - name: Code-coverage
+          AWS_REGION: "us-east-1"
+      - name: Build
         run: |
-          cat code_coverage.txt
+          cd src
+          GOOS=linux go build main
+      - name: Copy files to 'upload' directory
+        run: |
+          mkdir upload
+          cd src
+          cp main ../upload
+          cd ../aws
+          cp auto-deployment.yaml ../upload
+      - name: Run program that uploads files from 'upload' directory into S3 with public-read permissions
+        run: |
+          cd action
+          go run run.go
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: "us-east-1"
+          BUCKET_NAME: "logzio-aws-integrations-us-east-1"
+          BUCKET_KEY: "aws-well-architected-auto-deployment"
