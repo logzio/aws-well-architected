@@ -35,9 +35,6 @@ func NewWellArchitected(ctx context.Context) (*WellArchitected, error) {
 	}
 
 	client := wellarchitected.NewFromConfig(cfg)
-	if err != nil {
-		return nil, fmt.Errorf("error creating LogzioSender: %v", err)
-	}
 
 	return &WellArchitected{
 		ctx:    ctx,

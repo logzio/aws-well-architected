@@ -21,7 +21,6 @@ const (
 	lensName            = "wellarchitected"
 	logzioURL           = "https://listener.logz.io:8071"
 	logzioToken         = "123456789a"
-	awsRegionEnvName    = "AWS_REGION"
 )
 
 var (
@@ -46,12 +45,7 @@ func TestMain(m *testing.M) {
 }
 
 func setup() error {
-	err := os.Setenv(awsRegionEnvName, awsRegion)
-	if err != nil {
-		return fmt.Errorf("got error setting aws region environment variable. error: %v", err)
-	}
-
-	err = os.Setenv(logzioURLEnvName, logzioURL)
+	err := os.Setenv(logzioURLEnvName, logzioURL)
 	if err != nil {
 		return fmt.Errorf("got error setting logzio url environment variable. error: %v", err)
 	}
