@@ -45,7 +45,12 @@ func TestMain(m *testing.M) {
 }
 
 func setup() error {
-	err := os.Setenv("LOGZIO_URL", logzioURL)
+	err := os.Setenv("AWS_REGION", "us-east-1")
+	if err != nil {
+		return fmt.Errorf("got error setting aws region environment variable. error: %v", err)
+	}
+
+	err = os.Setenv("LOGZIO_URL", logzioURL)
 	if err != nil {
 		return fmt.Errorf("got error setting logzio url environment variable. error: %v", err)
 	}
