@@ -14,22 +14,22 @@ import (
 )
 
 const (
-	workloadName = "Workload-Test"
+	workloadName        = "Workload-Test"
 	workloadDescription = "Integration aws-well-architected tests"
 	workloadReviewOwner = "Logz.io"
-	awsRegion = "us-east-1"
-	lensName = "wellarchitected"
-	logzioURL = "https://listener.logz.io:8071"
-	logzioToken = "123456789a"
+	awsRegion           = "us-east-1"
+	lensName            = "wellarchitected"
+	logzioURL           = "https://listener.logz.io:8071"
+	logzioToken         = "123456789a"
 )
 
 var (
-	wa *WellArchitected
+	wa             *WellArchitected
 	testWorkloadID *string
 )
 
 func TestMain(m *testing.M) {
-	err :=setup()
+	err := setup()
 	if err != nil {
 		panic(err)
 	}
@@ -44,7 +44,7 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-func setup() error{
+func setup() error {
 	err := os.Setenv("LOGZIO_URL", logzioURL)
 	if err != nil {
 		return fmt.Errorf("got error setting logzio url environment variable. error: %v", err)
@@ -130,7 +130,7 @@ func TestCollectData_Success(t *testing.T) {
 		}
 	}
 
-	assert.Equal(t, lensReviewsNum + lensReviewImprovementsNum + 1, dataCounter)
+	assert.Equal(t, lensReviewsNum+lensReviewImprovementsNum+1, dataCounter)
 
 	resetWellArchitected()
 }
