@@ -24,11 +24,15 @@ jobs:
         run: |
           cd src
           GOOS=linux go build main.go
+      - name: Zip binary file
+        run: |
+          cd src
+          zip lambda_function.zip main
       - name: Copy files to 'upload' directory
         run: |
           mkdir upload
           cd src
-          cp main ../upload
+          cp lambda_function.zip ../upload
           cd ../aws
           cp auto-deployment.yaml ../upload
       - name: Run program that uploads files from 'upload' directory into S3 with public-read permissions
@@ -40,4 +44,4 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: "us-east-1"
           BUCKET_NAME: "logzio-aws-integrations-us-east-1"
-          BUCKET_KEY: "aws-well-architected-auto-deployment"
+          BUCKET_DIR: "aws-well-architected-auto-deployment"

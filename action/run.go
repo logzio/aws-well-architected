@@ -17,6 +17,12 @@ type S3 struct {
 	client *s3.Client
 }
 
+const (
+	autoDeploymentFileName = "auto-deployment.yaml"
+	zipFileName = "lambda_function.zip"
+	uploadDirectoryPath = "../upload/"
+)
+
 func NewS3() (*S3, error) {
 	ctx := context.Background()
 	cfg, err := config.LoadDefaultConfig(ctx)
@@ -72,14 +78,16 @@ func main() {
 	}
 
 	bucketName := os.Getenv("BUCKET_NAME")
-	bucketKey := os.Getenv("BUCKET_KEY")
+	bucketDirectory := os.Getenv("BUCKET_DIR")
+	autoDeploymentKey := bucketDirectory + autoDeploymentFileName
+	zipKey := bucketDirectory + zipFileName
 
-	err = s.uploadToAWS(&bucketName, &bucketKey, "../upload/auto-deployment.yaml")
+	err = s.uploadToAWS(&bucketName, &autoDeploymentKey, uploadDirectoryPath + autoDeploymentFileName)
 	if err != nil {
 		panic(err)
 	}
 
-	err = s.uploadToAWS(&bucketName, &bucketKey, "../upload/main")
+	err = s.uploadToAWS(&bucketName, &zipKey, uploadDirectoryPath + zipFileName)
 	if err != nil {
 		panic(err)
 	}
