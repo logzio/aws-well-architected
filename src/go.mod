@@ -7,7 +7,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.10.2
 	github.com/aws/aws-sdk-go-v2/service/wellarchitected v1.8.1
 	github.com/aws/smithy-go v1.9.0
-	github.com/jarcoal/httpmock v1.0.8
 	github.com/logzio/logzio-go v1.0.3
 	github.com/stretchr/testify v1.6.1
 )
