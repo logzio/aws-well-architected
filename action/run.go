@@ -74,12 +74,12 @@ func main() {
 	bucketName := os.Getenv("BUCKET_NAME")
 	bucketKey := os.Getenv("BUCKET_KEY")
 
-	err = s.uploadToAWS(&bucketName, &bucketKey, "upload/auto-deployment.yaml")
+	err = s.uploadToAWS(&bucketName, &bucketKey, "../upload/auto-deployment.yaml")
 	if err != nil {
 		panic(err)
 	}
 
-	err = s.uploadToAWS(&bucketName, &bucketKey, "upload/main")
+	err = s.uploadToAWS(&bucketName, &bucketKey, "../upload/main")
 	if err != nil {
 		panic(err)
 	}
