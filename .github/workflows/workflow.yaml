@@ -21,6 +21,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       - name: Code-coverage
         run: |
+          cd ./src
           # Get line-rate
           line_rate=$(head -2 code_coverage.xml | tail -1 | egrep -o "line-rate=\"[0-1]\.?[0-9]*\"" | egrep -o "[0-1]\.?[0-9]*")
 
