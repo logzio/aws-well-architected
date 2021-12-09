@@ -79,8 +79,8 @@ func main() {
 
 	bucketName := os.Getenv("BUCKET_NAME")
 	bucketDirectory := os.Getenv("BUCKET_DIR")
-	autoDeploymentKey := bucketDirectory + autoDeploymentFileName
-	zipKey := bucketDirectory + zipFileName
+	autoDeploymentKey := bucketDirectory + "/" + autoDeploymentFileName
+	zipKey := bucketDirectory + "/" + zipFileName
 
 	err = s.uploadToAWS(&bucketName, &autoDeploymentKey, uploadDirectoryPath + autoDeploymentFileName)
 	if err != nil {
